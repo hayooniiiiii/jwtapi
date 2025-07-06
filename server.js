@@ -43,7 +43,8 @@ async function getAccessToken() {
 //  Dataverse에서 사용자 조회 함수
 async function findUser(id, pwd, token) {
   // 'employees' 테이블에서 id(사번), pwd(비밀번호) 일치하는 사용자 찾기
-  const url = `${process.env.RESOURCE}/api/data/v9.2/employees?$filter=Employee_number eq '${id}' and Employee_pwd eq '${pwd}'`;
+  const url = `${process.env.RESOURCE}/api/data/v9.2/cre3b_employees?$filter=cre3b_employee_number eq '${id}' and cre3b_employee_pwd eq '${pwd}'`;
+
 
   try {
     const res = await axios.get(url, {
