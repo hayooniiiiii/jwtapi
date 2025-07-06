@@ -89,9 +89,9 @@ app.post('/login', async (req, res) => {
     res.json({
       token: jwtToken,
       user: {
-        id: user.Employee_number,
-        name: user.Employee_name,
-        role: user.Employee_department
+        id: user.cre3b_employee_number,
+        name: user.cre3b_employee_name,
+        role: user.cre3b_employee_department
       }
     });
   } catch (err) {
