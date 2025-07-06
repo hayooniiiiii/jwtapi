@@ -77,9 +77,9 @@ app.post('/login', async (req, res) => {
     // JWT 토큰 생성 (1시간 유효)
     const jwtToken = jwt.sign(
       {
-        id: user.Employee_number,
-        name: user.Employee_name,
-        role: user.Employee_department
+        id: user.cre3b_employee_number,
+        name: user.cre3b_employee_name,
+        role: user.cre3b_employee_department
       },
       SECRET,
       { expiresIn: '1h' }
