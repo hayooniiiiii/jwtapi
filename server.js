@@ -67,6 +67,7 @@ async function findUser(id, pwd, token) {
 
 app.post('/login', async (req, res) => {
   console.log("headers 👉", req.headers);
+  console.log("raw body 👉", req.rawBody);
   console.log("req.body 👉", req.body);
   const { id, password } = req.body; // PowerApps에서 전달된 사번(id), 비밀번호(password)
 
