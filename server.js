@@ -64,6 +64,7 @@ async function findUser(id, pwd, token) {
 // 로그인 API 엔드포인트 (PowerApps에서 호출)
 
 app.post('/login', async (req, res) => {
+  console.log("req.body 👉", req.body);
   const { id, password } = req.body; // PowerApps에서 전달된 사번(id), 비밀번호(password)
 
   try {
