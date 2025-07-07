@@ -10,10 +10,11 @@ require('dotenv').config();
 // JWT 토큰 생성 시 사용할 비밀 키 (.env에서 가져옴)
 const SECRET = process.env.SECRET;
 
+app.use(express.json()); // JSON 형식의 요청 body 자동 파싱
+
 // Express 서버 객체 생성
 const app = express();
 app.use(cors()); // 모든 도메인에서 API 요청 가능 (PowerApps 등 외부 앱 허용)
-app.use(express.json()); // JSON 형식의 요청 body 자동 파싱
 
 
 // Azure AD에서 Dataverse 인증 토큰 얻기
@@ -64,6 +65,7 @@ async function findUser(id, pwd, token) {
 // 로그인 API 엔드포인트 (PowerApps에서 호출)
 
 app.post('/login', async (req, res) => {
+  console.log("headers 👉", req.headers);
   console.log("req.body 👉", req.body);
   const { id, password } = req.body; // PowerApps에서 전달된 사번(id), 비밀번호(password)
 
