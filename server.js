@@ -10,10 +10,11 @@ require('dotenv').config();
 // JWT 토큰 생성 시 사용할 비밀 키 (.env에서 가져옴)
 const SECRET = process.env.SECRET;
 
-app.use(express.json()); // JSON 형식의 요청 body 자동 파싱
-
 // Express 서버 객체 생성
 const app = express();
+
+app.use(express.json()); // JSON 형식의 요청 body 자동 파싱
+
 app.use(cors()); // 모든 도메인에서 API 요청 가능 (PowerApps 등 외부 앱 허용)
 
 
