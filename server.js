@@ -45,7 +45,7 @@ async function getAccessToken() {
 //  Dataverse에서 사용자 조회 함수
 async function findUser(id, pwd, token) {
   // 'employees' 테이블에서 id(사번), pwd(비밀번호) 일치하는 사용자 찾기
-  const url = `${process.env.RESOURCE}/api/data/v9.2/cre3b_employees?$filter=cre3b_employee_number eq '${id}' and cre3b_employee_pwd eq '${pwd}'`;
+  const url = `${process.env.RESOURCE}/api/data/v9.2/cre4e_employee?$filter=cre3b_employee_number eq '${id}' and cre3b_employee_pwd eq '${pwd}'`;
 
 
   try {
@@ -82,9 +82,9 @@ app.post('/login', async (req, res) => {
     // JWT 토큰 생성 (1시간 유효)
     const jwtToken = jwt.sign(
       {
-        id: user.cre3b_employee_number,
-        name: user.cre3b_employee_name,
-        role: user.cre3b_employee_department
+        id: user.cre4e_employee_number,
+        name: user.cre4e_employee_name,
+        role: user.cre4e_employee_department
       },
       SECRET,
       { expiresIn: '1h' }
@@ -94,9 +94,9 @@ app.post('/login', async (req, res) => {
     res.json({
       token: jwtToken,
       user: {
-        id: user.cre3b_employee_number,
-        name: user.cre3b_employee_name,
-        role: user.cre3b_employee_department
+        id: user.cre4e_employee_number,
+        name: user.cre4e_employee_name,
+        role: user.cre4e_employee_department
       }
     });
   } catch (err) {
