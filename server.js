@@ -77,7 +77,7 @@ app.post('/login', async (req, res) => {
     const accessToken = await getAccessToken();
     console.log("🔑 AccessToken 일부:", accessToken?.slice(0, 30) + "...");
 
-    const user = await findUser(id, password, accessToken);
+    const user = await findUser(num, password, accessToken);
     console.log("👤 사용자 객체:", user);
 
     if (!user) {
