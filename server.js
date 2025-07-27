@@ -13,7 +13,7 @@ app.use(cors());
 console.log("🔧 서버 시작됨");
 console.log("▶ TENANT_ID:", process.env.TENANT_ID);
 console.log("▶ CLIENT_ID:", process.env.CLIENT_ID);
-console.log("▶ CLIENT_SECRET:", process.env.CLIENT_SECRET ? "[OK]" : "[MISSING]");
+console.log("▶ CLIENT_SECRET:", process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : "[MISSING]");
 console.log("▶ RESOURCE:", process.env.RESOURCE);
 console.log("▶ SECRET:", SECRET ? "[OK]" : "[MISSING]");
 
@@ -40,8 +40,8 @@ async function getAccessToken() {
   }
 }
 
-async function findUser(id, pwd, token) {
-  const url = `${process.env.RESOURCE}/api/data/v9.2/cre4e_employees?$filter=cre4e_employee_number eq '${id}' and cre4e_employee_pwd eq '${pwd}'`;
+async function findUser(num, pwd, token) {
+  const url = `${process.env.RESOURCE}/api/data/v9.2/cre4e_employees?$filter=cre4e_employee_number eq '${num}' and cre4e_employee_pwd eq '${pwd}'`;
 
   console.log("📡 Dataverse 사용자 조회 요청:", url);
 
@@ -66,11 +66,11 @@ app.post('/login', async (req, res) => {
   console.log("📨 요청 헤더:", req.headers);
   console.log("📨 요청 바디:", req.body);
 
-  const { id, password } = req.body;
+  const { num, password } = req.body;
 
-  if (!id || !password) {
-    console.warn("⚠️ 로그인 정보 누락:", { id, password });
-    return res.status(400).json({ error: 'ID 또는 비밀번호가 누락되었습니다.' });
+  if (!num || !password) {
+    console.warn("⚠️ 로그인 정보 누락:", { num, password });
+    return res.status(400).json({ error: 'num 또는 비밀번호가 누락되었습니다.' });
   }
 
   try {
@@ -87,9 +87,10 @@ app.post('/login', async (req, res) => {
 
     const jwtToken = jwt.sign(
       {
-        id: user.cre4e_employee_number,
+        num: user.cre4e_employee_number,
         name: user.cre4e_employee_name,
-        role: user.cre4e_employee_department
+        role: user.cre4e_employee_department,
+        id: user.cre4e_employee_id
       },
       SECRET,
       { expiresIn: '1h' }
@@ -100,9 +101,10 @@ app.post('/login', async (req, res) => {
     res.json({
       token: jwtToken,
       user: {
-        id: user.cre4e_employee_number,
+        num: user.cre4e_employee_number,
         name: user.cre4e_employee_name,
-        role: user.cre4e_employee_department
+        role: user.cre4e_employee_department,
+        id: user.cre4e_employee_id
       }
     });
   } catch (err) {
