@@ -2,7 +2,6 @@ const express = require('express');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
@@ -12,7 +11,6 @@ const SECRET = process.env.SECRET;
 // ===== 미들웨어 =====
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
 
 // 부팅 로그
 console.log('🔧 서버 시작');
@@ -24,8 +22,7 @@ console.log('▶ SECRET:', SECRET ? '[OK]' : '[MISSING]');
 
 // ===== 공통 유틸 =====
 function escODataString(s) {
-  // OData 문자열 이스케이프: 작은따옴표 2개로
-  return String(s).replace(/'/g, "''");
+  return String(s).replace(/'/g, "''"); // 작은따옴표 이스케이프
 }
 
 async function getAccessToken() {
@@ -46,13 +43,6 @@ async function getAccessToken() {
   return res.data.access_token;
 }
 
-/**
- * Dataverse 사용자 조회
- * @param {string|number} num - 사번/ID
- * @param {string} pwd - 비밀번호(해시/문자열)
- * @param {string} token - AAD 액세스 토큰
- * @returns {Promise<object|undefined>}
- */
 async function findUser(num, pwd, token) {
   const baseUrl = `${process.env.RESOURCE}/api/data/v9.2/cre4e_employees`;
   const n = Number(num);
@@ -73,13 +63,12 @@ async function findUser(num, pwd, token) {
     },
     params: {
       $select:
-        'cre4e_employee_number,cre4e_employee_name,cre4e_employee_department,cre4e_employeEid,cre4e_employeeid',
+        'cre4e_employee_number,cre4e_employee_name,cre4e_employee_department,cre4e_employeeid',
       $filter: filter,
       $top: 1
     }
   });
 
-  // 일부 환경에서 logical name 대소문자/표기 혼동 방지를 위해 id 후보 2개 모두 select
   const user = res.data?.value?.[0];
   console.log('📦 사용자 조회 응답(첫건):', user ? 'FOUND' : 'EMPTY');
   return user;
@@ -108,17 +97,11 @@ app.post('/login', async (req, res) => {
         .json({ error: 'ID 또는 비밀번호가 일치하지 않습니다.' });
     }
 
-    // Dataverse id 필드명 보정 (환경에 따라 cre4e_employeeid 또는 cre4e_employeEid)
-    const dvId =
-      user.cre4e_employeeid ||
-      user.cre4e_employeEid ||
-      user.cre4e_employee_id; // 혹시 기존 코드 호환
-
     const payload = {
       num: user.cre4e_employee_number,
       name: user.cre4e_employee_name,
       role: user.cre4e_employee_department,
-      id: dvId
+      id: user.cre4e_employeeid
     };
 
     const token = jwt.sign(payload, SECRET, { expiresIn: '1h' });
